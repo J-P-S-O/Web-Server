@@ -4,62 +4,41 @@ This is a template from mozilla.
 */
 
 
-var http = require('http');
-var fs = require('fs');
-var path = require('path');
+var http = require('http'),
+  config = require('./config'),
+  fileHandler = require('./filehandler'),
+  parse = require('url').parse,
+  types = config.types,
+   rootFolder = config.rootFolder,
+   defaultIndex = config.defaultIndex,
+   server;
 
-http.createServer(function (request, response) {
-    console.log('request ', request.url);
+module.exports = server = http.createServer();
 
-    var filePath = '.' + request.url;
-    if (filePath == './') {
-        filePath = './index.html';
-    }
+ server.on('request', onRequest);
 
-    var extname = String(path.extname(filePath)).toLowerCase();
-    var contentType = 'text/html';
-    var mimeTypes = {
-        '.html': 'text/html',
-        '.js': 'text/javascript',
-        '.css': 'text/css',
-        '.json': 'application/json',
-        '.png': 'image/png',
-        '.jpg': 'image/jpg',
-        '.gif': 'image/gif',
-        '.wav': 'audio/wav',
-        '.mp4': 'video/mp4',
-        '.woff': 'application/font-woff',
-        '.ttf': 'application/font-ttf',
-        '.eot': 'application/vnd.ms-fontobject',
-        '.otf': 'application/font-otf',
-        '.svg': 'application/image/svg+xml'
-    };
+ function onRequest(req, res) {
+ var filename = parse(req.url).pathname,
+     fullPath,
+     extension;
 
-    contentType = mimeTypes[extname] || 'application/octet-stream';
-if (filePath.has(">" or filePath.has("<")){
-    fs.readFile("bad-request.html",function(content,error){
-        response.writeHead(200, { 'Content-Type': contentType });
-        response.end(content, 'utf-8');
-    }else{
-    fs.readFile(filePath, function(error, content) {
-        if (error) {
-            if(error.code == 'ENOENT'){
-                fs.readFile('./404.html', function(error, content) {
-                    response.writeHead(200, { 'Content-Type': contentType });
-                    response.end(content, 'utf-8');
-                });
-            }
-            else {
-                response.writeHead(500);
-                response.end('Sorry, check with the site admin for error: '+error.code+' ..\n');
-                response.end();
-            }
-        }
-        else {
-            response.writeHead(200, { 'Content-Type': contentType });
-            response.end(content, 'utf-8');
-        }
-    })};
+ if(filename === '/') {
+      filename = defaultIndex;
+  }
 
-}).listen(8125);
-console.log('Server running at http://127.0.0.1:8125/');
+ fullPath = rootFolder + filename;
+  
+    extension = filename.substr(filename.lastIndexOf('.') + 1);
+
+    
+  fileHandler(fullPath, function(data) {
+      res.writeHead(200, {
+           'Content-Type': types[extension] || 'text/plain',
+           'Content-Length': data.length
+      });     res.end(data);
+
+  }, function(err) {
+      res.writeHead(404);
+      res.end();
+ });
+ }
