@@ -36,7 +36,11 @@ http.createServer(function (request, response) {
     };
 
     contentType = mimeTypes[extname] || 'application/octet-stream';
-
+if (filePath.has(">" or filePath.has("<")){
+    fs.readFile("bad-request.html",function(content,error){
+        response.writeHead(200, { 'Content-Type': contentType });
+        response.end(content, 'utf-8');
+    }else{
     fs.readFile(filePath, function(error, content) {
         if (error) {
             if(error.code == 'ENOENT'){
@@ -55,7 +59,7 @@ http.createServer(function (request, response) {
             response.writeHead(200, { 'Content-Type': contentType });
             response.end(content, 'utf-8');
         }
-    });
+    })};
 
 }).listen(8125);
 console.log('Server running at http://127.0.0.1:8125/');
