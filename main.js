@@ -2,14 +2,8 @@ let http = require('http');
 let fs = require('fs');
 
 let server = http.createServer(function serve(req, res) {
-  if (req.url.lastIndexOf('.')==-1){
-    req.url+="index.html"
-  }
-  if(req.url.lastIndexOf('>')!=-1 || req.url.lastIndexOf('<')!=-1){
-  res.writeHead(200, {'Content-Type': 'text/html'})
-  res.end('www/'+'500bad.html')
   
-  }else{
+  
   fs.readFile('www' + req.url, function (err,data){
   if (err){
   res.writeHead(200, {'Content-Type': 'text/html'});
@@ -21,7 +15,6 @@ res.end(data)
   res.writeHead(200, {'Content-Type': 'text/html'});
     res.write(data); //write a response to the client
     res.end();
-  }})}}
-  );
+  }})});
 server.listen(8080);
-console.log("succes");
+console.log("success");
