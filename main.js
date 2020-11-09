@@ -80,7 +80,9 @@ let mime = {
 console.log(mime)
 
 let server = http.createServer(function serve(req, res) {
-  
+  if (req.url.lastIndexOf('.')==-1){
+req.url+='index.html'
+}
   
   fs.readFile('www' + req.url, function (err,data){
   if (err){
@@ -90,7 +92,7 @@ res.end(data)
 })
   
   }else{
-  res.writeHead(200, {'Content-Type': mime[req.url.slice(req.url.lastIndexOf('.'))||'text/html']});
+  res.writeHead(200, {'Content-Type': mime[req.url.slice(req.url.lastIndexOf('.')+1)||'text/html']});
     res.write(data); //write a response to the client
     res.end();
   }})});
