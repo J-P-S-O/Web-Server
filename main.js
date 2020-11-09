@@ -1,44 +1,26 @@
-/*
-This is a template from mozilla. 
+let http = require('http');
+let fs = require('fs');
 
-*/
-
-
-var http = require('http'),
-  config = require('./config'),
-  fileHandler = require('./filehandler'),
-  parse = require('url').parse,
-  types = config.types,
-   rootFolder = config.rootFolder,
-   defaultIndex = config.defaultIndex,
-   server;
-
-module.exports = server = http.createServer();
-
- server.on('request', onRequest);
-
- function onRequest(req, res) {
- var filename = parse(req.url).pathname,
-     fullPath,
-     extension;
-
- if(filename === '/') {
-      filename = defaultIndex;
+let server = http.createServer(function serve(req, res) {
+  if (req.url.lastIndexOf('.')==-1){
+    req.url+="index.html"
   }
-
- fullPath = rootFolder + filename;
+  if(req.url.lastIndexOf('>')!=-1 || req.url.lastIndexOf('<')!=-1){
+  res.writeHead(200, {'Content-Type': 'text/html'})
+  res.end('www/'+'500bad.html')
   
-    extension = filename.substr(filename.lastIndexOf('.') + 1);
-
-    
-  fileHandler(fullPath, function(data) {
-      res.writeHead(200, {
-           'Content-Type': types[extension] || 'text/plain',
-           'Content-Length': data.length
-      });     res.end(data);
-
-  }, function(err) {
-      res.writeHead(404);
-      res.end();
- });
- }
+  }else{
+  fs.readFile('www' + req.url, function (err,data){
+  if (err){
+  res.writeHead(200, {'Content-Type': 'text/html'});
+  fs.readFile('www/404.html',function(){})
+  res.end('www/'+'404.html')
+  
+  }else{
+  res.writeHead(200, {'Content-Type': 'text/html'});
+    res.write(data); //write a response to the client
+    res.end();
+  }})}}
+  );
+server.listen(8080);
+console.log("succes");
