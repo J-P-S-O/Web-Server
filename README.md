@@ -10,6 +10,5 @@ Coming soon...
 - NodeJS and Electron community
 - 
 # Contribute
-- We need to handle bad requests (500)
 - JSON.parse mime types from /conf folder
 - Just create an issue!
