@@ -84,11 +84,13 @@ let server = http.createServer(function serve(req, res) {
 page = req.url.slice(req.url.lastIndexOf("?"));
 console.log(page)
   if (req.url.lastIndexOf('.')==-1){
-req.url.replace("/"+page,"")
+req.url = req.url.slice(0,req.url.lastIndexOf("/"))
 console.log(req.url)
-req.url+='index.html'
+req.url+="index.html"
+rawurl=req.url
 req.url+=page
 console.log(req.url)
+
 }
 if (req.url.lastIndexOf("%3C")!=-1 || req.url.lastIndexOf("%3E")!=-1 ){
 fs.readFile("www/500bad.html", function(err,data){
@@ -97,7 +99,7 @@ res.end(data)
 })
 }else{
   
-  fs.readFile('www' + req.url, function (err,data){
+  fs.readFile('www/' + rawurl, function (err,data){
   if (err){
   res.writeHead(200, {'Content-Type': 'text/html'});
   fs.readFile('www/404.html',function(err,data){
