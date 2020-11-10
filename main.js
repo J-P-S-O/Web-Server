@@ -79,10 +79,23 @@ let mime = {
 }
 console.log(mime)
 
+
 let server = http.createServer(function serve(req, res) {
+page = req.url.slice(req.url.lastIndexOf("?"));
+console.log(page)
   if (req.url.lastIndexOf('.')==-1){
+req.url.replace("/"+page,"")
+console.log(req.url)
 req.url+='index.html'
+req.url+=page
+console.log(req.url)
 }
+if (req.url.lastIndexOf("%3C")!=-1 || req.url.lastIndexOf("%3E")!=-1 ){
+fs.readFile("www/500bad.html", function(err,data){
+res.writeHead(200, {'Content-Type': 'text/html'})
+res.end(data)
+})
+}else{
   
   fs.readFile('www' + req.url, function (err,data){
   if (err){
@@ -92,9 +105,11 @@ res.end(data)
 })
   
   }else{
-  res.writeHead(200, {'Content-Type': mime[req.url.slice(req.url.lastIndexOf('.')+1)||'text/html']});
+	 
+  res.writeHead(200, {'Content-Type': mime[req.url.slice(req.url.lastIndexOf('.')+1)]||'text/html'});
     res.write(data); //write a response to the client
     res.end();
-  }})});
+}})}});
+
 server.listen(80);
 console.log("success");
