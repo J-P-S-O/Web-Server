@@ -5,19 +5,24 @@ console.log(mime)
 
 
 let server = http.createServer(function serve(req, res) {
+if (req.url.includes("?")){
 let page = req.url.slice(req.url.lastIndexOf("?"));
 
 req.url = req.url.replace(page,"")
-
+}
+try{
 console.log("request cut: "+page+ " url is now "+req.url)
+}catch(e){
+console.log("nothing cut")
+}
   if (req.url.lastIndexOf('.')==-1){
 req.url+="index.html"
+
 console.log("url that we will try to find:")
 
 
 
 console.log(req.url)
-
 }
 
 let rawurl=req.url
