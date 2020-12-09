@@ -48,12 +48,14 @@ res.end(data)
     res.end();
 }})}});
 try{
+	
 server.listen(80);
+console.log("success");
 }catch(e){
 	console.log("error, permission denied")
 	console.log(json.stringify(e))
 }
-console.log("success");
+
 process.on("SIGINT",()=>{
 	console.log("Exiting")
 })
