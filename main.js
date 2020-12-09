@@ -54,7 +54,7 @@ process.on("SIGINT",()=>{
 	console.log("Exiting")
 })
 process.on("error", (e)=>{
-	console.log("Error:)
+	console.log("Error:")
 	console.log(JSON.stringify(e))
 	process.kill()
 })
