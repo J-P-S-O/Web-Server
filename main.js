@@ -50,3 +50,13 @@ res.end(data)
 
 server.listen(80);
 console.log("success");
+process.on("SIGINT",()=>{
+	console.log("Exiting")
+})
+process.on("error", (e)=>{
+	console.log("Error:)
+	console.log(JSON.stringify(e))
+	process.kill()
+})
+
+	 
