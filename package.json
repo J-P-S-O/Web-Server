@@ -17,7 +17,6 @@
     "http": "0.0.1-security"
   }
 }
-=======
 {
   "name": "webserver",
   "version": "1.0.0",
