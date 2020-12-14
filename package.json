@@ -1,3 +1,23 @@
+<<<<<<< HEAD
+{
+  "name": "webserver",
+  "version": "1.0.0",
+  "description": "A web server",
+  "main": "main.js",
+  "scripts": {
+    "test": "npm i -g pkg && pkg main.js"
+  },
+  "keywords": [
+    "server"
+  ],
+  "author": "João Pedro Santos de Oliveira",
+  "license": "MIT",
+  "dependencies": {
+    "fs": "0.0.1-security",
+    "http": "0.0.1-security"
+  }
+}
+=======
 {
   "name": "webserver",
   "version": "1.0.0",
@@ -16,3 +36,4 @@
     "http": "0.0.1-security"
   }
 }
+>>>>>>> a13ac5c50d6f38812a6a0056c03a2e6fbec9c8ce
