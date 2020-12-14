@@ -104,19 +104,19 @@ console.log(req.url)
 
 let rawurl=req.url
 if (req.url.lastIndexOf("%3C")!=-1 || req.url.lastIndexOf("%3E")!=-1 ){
-fs.readFile("www/500bad.html", function(err,data){
-res.writeHead(200, {'Content-Type': 'text/html'})
-res.end(data)
-})
+
+res.writeHead(200, {'Content-Type': 'text/plain'})
+res.end(500)
+
 }else{
   let a = rawurl
   console.log(rawurl)
   fs.readFile('www/' + rawurl, function (err,data){
   if (err){
-  res.writeHead(200, {'Content-Type': 'text/html'});
-  fs.readFile('www/404.html',function(err,data){
-res.end(data)
-})
+  res.writeHead(200, {'Content-Type': 'text/plain'});
+  
+res.end(404)
+)
   
   }else{
 	 
