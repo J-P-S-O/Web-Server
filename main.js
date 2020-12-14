@@ -1,5 +1,6 @@
 let http = require('http');
 let fs = require('fs');
+let url = require('url')
 let mime = 
 {
   aac: 'audio/aac',
@@ -82,40 +83,21 @@ console.log(mime)
 
 
 let server = http.createServer(function serve(req, res) {
-if (req.url.includes("?")){
-let page = req.url.slice(req.url.lastIndexOf("?"));
-
-req.url = req.url.replace(page,"")
-}
-try{
-console.log("request cut: "+page+ " url is now "+req.url)
-}catch(e){
-console.log("nothing cut")
-}
-  if (req.url.lastIndexOf('.')==-1){
-req.url+="index.html"
-
-console.log("url that we will try to find:")
 
 
-
-console.log(req.url)
-}
-
-let rawurl=req.url
+let rawurl= url.parse(req.url).pathname
 if (req.url.lastIndexOf("%3C")!=-1 || req.url.lastIndexOf("%3E")!=-1 ){
 
 res.writeHead(200, {'Content-Type': 'text/plain'})
-res.end(500)
+res.end("500")
 
 }else{
-  let a = rawurl
   console.log(rawurl)
-  fs.readFile('www/' + rawurl, function (err,data){
+  fs.readFile(rawurl, function (err,data){
   if (err){
   res.writeHead(200, {'Content-Type': 'text/plain'});
   
-res.end(404)
+res.end("404")
 
   
   }else{
