@@ -5,3 +5,5 @@ Coming soon...
 - Simple configuration
 # Contribute
 - Just create an issue!
+# Travic-ci
+![image](https://api.travis-ci.com/J-P-S-O/Http-Server.svg?branch=main)
