@@ -90,8 +90,9 @@ let server = http.createServer(function serve(req, res) {
 let rawurl= url.parse(req.url).pathname
 rawurl = rawurl.substring(1) //cut slash
 console.log(rawurl)
+// until here we've normalized the url
 try{
-if (fs.lstatSync(path.join(cwd,rawurl)).isDirectory()){
+if (fs.lstatSync(path.join(cwd,rawurl)).isDirectory()){ //check if path is dir, throw err if non existent
 	if (fs.existsSync(path.join(cwd,rawurl,'index.html'))){
 	fs.readFile(path.join(cwd,rawurl,'index.html'), function (err,data){
 	res.writeHead(200, {'Content-Type': 'text/html'});
@@ -122,38 +123,31 @@ if (fs.lstatSync(path.join(cwd,rawurl)).isDirectory()){
 });
 }
 
-}else{
+}else{ //not a dir
   try{
  res.writeHead(200, {'Content-Type': mime[req.url.slice(req.url.lastIndexOf('.')+1)]||'text/html'});
  let stream = fs.createReadStream(path.join(cwd,rawurl))
  stream.on('open', function(){
    stream.pipe(res);
-  
+
  })
 
  return 0
 }catch(e){
+
   console.log(e.message)
   return 3
 }
 }
-}catch(e){//non existent dir
+}catch(e){//non existent dir nor file
 	res.writeHead(200, {'Content-Type': 'text/plain'});
 	res.write(e.message)
   console.log("err: --->" + e.message)
 	res.end()
   return 2
 }
-fs.readFile(path.join(cwd,rawurl), function (err,data){
-if (err){
-console.log(err.message)
-return 2
-}else{
-
-  res.writeHead(200, {'Content-Type': mime[req.url.slice(req.url.lastIndexOf('.')+1)]||'text/html'});
-    res.write(data); //write a response to the client
-    res.end();
-}})});
+console.log("unhandled request: " + rawurl)
+)});
 
 server.listen(80);
 console.log("success");
