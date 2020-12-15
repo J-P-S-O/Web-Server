@@ -99,7 +99,22 @@ if (fs.lstatSync(path.join(cwd,rawurl)).isDirectory()){
 	res.end()
 })
 }else{
-  //no indexfile
+  //no indexfile, list dir
+  fs.readdir(path.join(cwd,rawurl), (err, files) => {
+    if (err) {
+        res.writeHead(200, {'Content-Type': 'text/plain'})
+        res.end(JSON.stringify(err))
+        console.log("unknown readdir error -->"+ err.message)
+        return 1
+    }
+
+    // files object contains all files names
+    // log them on console
+    files.forEach(file => {
+        res.writeHead(200, {'Content-Type': 'text/html'})
+        res.write(`<html><head><title>indexing ${rawurl}</tile></head>`)
+    });
+});
 }
 
 }else{
