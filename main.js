@@ -97,6 +97,7 @@ if (fs.lstatSync(path.join(cwd,rawurl)).isDirectory()){
 	res.writeHead(200, {'Content-Type': 'text/html'});
 	res.write(data)
 	res.end()
+  return 0
 })
 }else{
   //no indexfile, list dir
@@ -111,17 +112,30 @@ if (fs.lstatSync(path.join(cwd,rawurl)).isDirectory()){
     // files object contains all files names
     // log them on console
     res.writeHead(200, {'Content-Type': 'text/html'})
-    res.write(`<html><head><title>indexing ${rawurl}</tile></head>`)
+    res.write(`<html><head></head>`)
     files.forEach(file => {
-        res.write(`<a href = ${file}>${file}</a>`)
+        res.write(`<a href = ${path.join(rawurl,file)}>${file}</a><p></p>`)
 
     });
       res.end(`</html>`)
+      return 0
 });
 }
 
 }else{
- //not a dir
+  try{
+ res.writeHead(200, {'Content-Type': mime[req.url.slice(req.url.lastIndexOf('.')+1)]||'text/html'});
+ let stream = fs.createReadStream(path.join(cwd,rawurl))
+ stream.on('open', function(){
+   stream.pipe(res);
+  
+ })
+
+ return 0
+}catch(e){
+  console.log(e.message)
+  return 3
+}
 }
 }catch(e){//non existent dir
 	res.writeHead(200, {'Content-Type': 'text/plain'});
@@ -132,9 +146,6 @@ if (fs.lstatSync(path.join(cwd,rawurl)).isDirectory()){
 }
 fs.readFile(path.join(cwd,rawurl), function (err,data){
 if (err){
-res.writeHead(200, {'Content-Type': 'text/plain'});
-res.write(err.message)
-res.end()
 console.log(err.message)
 return 2
 }else{
