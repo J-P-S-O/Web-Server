@@ -2,7 +2,7 @@ let http = require('http');
 let fs = require('fs');
 let url = require('url')
 let path = require('path')
-let mime = 
+let mime =
 {
   aac: 'audio/aac',
   abw: 'application/x-abiword',
@@ -90,8 +90,27 @@ let server = http.createServer(function serve(req, res) {
 let rawurl= url.parse(req.url).pathname
 rawurl = rawurl.substring(1) //cut slash
 console.log(rawurl)
+try{
 if (fs.lstatSync(path.join(cwd,rawurl)).isDirectory()){
-	
+	if (fs.existsSync(path.join(cwd,rawurl,'index.html'))){
+	fs.readFile(path.join(cwd,rawurl,'index.html'), function (err,data){
+	res.writeHead(200, {'Content-Type': 'text/html'});
+	res.write(data)
+	res.end()
+})
+}else{
+  //no indexfile
+}
+
+}else{
+ //not a dir
+}
+}catch(e){//non existent dir
+	res.writeHead(200, {'Content-Type': 'text/plain'});
+	res.write(e.message)
+  console.log("err: --->" + e.message)
+	res.end()
+  return 2
 }
 fs.readFile(path.join(cwd,rawurl), function (err,data){
 if (err){
@@ -99,13 +118,13 @@ res.writeHead(200, {'Content-Type': 'text/plain'});
 res.write(err.message)
 res.end()
 console.log(err.message)
-  return 2
-  }
-	 
+return 2
+}else{
+
   res.writeHead(200, {'Content-Type': mime[req.url.slice(req.url.lastIndexOf('.')+1)]||'text/html'});
     res.write(data); //write a response to the client
     res.end();
-})});
+}})});
 
 server.listen(80);
 console.log("success");
