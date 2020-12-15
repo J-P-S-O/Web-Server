@@ -98,6 +98,7 @@ if (fs.lstatSync(path.join(cwd,rawurl)).isDirectory()){ //check if path is dir, 
 	res.writeHead(200, {'Content-Type': 'text/html'});
 	res.write(data)
 	res.end()
+  
   return 0
 })
 }else{
