@@ -1,9 +1,8 @@
 # Http-Server, a production scale server.
 
-Coming soon...
 # Features
 - Simple configuration
-# Contribute
-- Just create an issue!
+- Logs (coming)
+- TS built-in (coming)
 # Travis build
 ![image](https://api.travis-ci.com/J-P-S-O/Http-Server.svg?branch=main)
