@@ -98,7 +98,7 @@ if (fs.lstatSync(path.join(cwd,rawurl)).isDirectory()){ //check if path is dir, 
 	res.writeHead(200, {'Content-Type': 'text/html'});
 	res.write(data)
 	res.end()
-  
+
   return 0
 })
 }else{
@@ -148,7 +148,7 @@ if (fs.lstatSync(path.join(cwd,rawurl)).isDirectory()){ //check if path is dir, 
   return 2
 }
 console.log("unhandled request: " + rawurl)
-)});
+});
 
 server.listen(80);
 console.log("success");
