@@ -110,10 +110,13 @@ if (fs.lstatSync(path.join(cwd,rawurl)).isDirectory()){
 
     // files object contains all files names
     // log them on console
+    res.writeHead(200, {'Content-Type': 'text/html'})
+    res.write(`<html><head><title>indexing ${rawurl}</tile></head>`)
     files.forEach(file => {
-        res.writeHead(200, {'Content-Type': 'text/html'})
-        res.write(`<html><head><title>indexing ${rawurl}</tile></head>`)
+        res.write(`<a href = ${file}>${file}</a>`)
+
     });
+      res.end(`</html>`)
 });
 }
 
