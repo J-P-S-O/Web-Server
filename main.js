@@ -1,6 +1,7 @@
 let http = require('http');
 let fs = require('fs');
 let url = require('url')
+let path = require('path')
 let mime = 
 {
   aac: 'audio/aac',
@@ -81,31 +82,30 @@ let mime =
 }
 console.log(mime)
 
-
+let cwd = process.cwd()
+console.log(cwd)
 let server = http.createServer(function serve(req, res) {
 
 
 let rawurl= url.parse(req.url).pathname
-if (req.url.lastIndexOf("%3C")!=-1 || req.url.lastIndexOf("%3E")!=-1 ){
-
-res.writeHead(200, {'Content-Type': 'text/plain'})
-res.end("500")
-
-}else{
-  console.log(rawurl)
-  fs.readFile(rawurl, function (err,data){
-  if (err){
-  res.writeHead(200, {'Content-Type': 'text/plain'});
-  
-res.end("404")
-
-  
-  }else{
+rawurl = rawurl.substring(1) //cut slash
+console.log(rawurl)
+if (fs.lstatSync(path.join(cwd,rawurl)).isDirectory()){
+	
+}
+fs.readFile(path.join(cwd,rawurl), function (err,data){
+if (err){
+res.writeHead(200, {'Content-Type': 'text/plain'});
+res.write(err.message)
+res.end()
+console.log(err.message)
+  return 2
+  }
 	 
   res.writeHead(200, {'Content-Type': mime[req.url.slice(req.url.lastIndexOf('.')+1)]||'text/html'});
     res.write(data); //write a response to the client
     res.end();
-}})}});
+})});
 
 server.listen(80);
 console.log("success");
