@@ -2,6 +2,7 @@ let http = require('http');
 let fs = require('fs');
 let url = require('url')
 let path = require('path')
+let chalk = require('chalk')
 let mime =
 {
   aac: 'audio/aac',
@@ -98,8 +99,8 @@ if (fs.lstatSync(path.join(cwd,rawurl)).isDirectory()){ //check if path is dir, 
 	res.writeHead(200, {'Content-Type': 'text/html'});
 	res.write(data)
 	res.end()
-
-  return 0
+	console.log(new Date() + ": read index of " + chalk.blue(rawurl || "[blank]" )) 
+        return 0
 })
 }else{
   //no indexfile, list dir
@@ -111,8 +112,7 @@ if (fs.lstatSync(path.join(cwd,rawurl)).isDirectory()){ //check if path is dir, 
         return 1
     }
 
-    // files object contains all files names
-    // log them on console
+    
     res.writeHead(200, {'Content-Type': 'text/html'})
     res.write(`<html><head></head>`)
     files.forEach(file => {
@@ -120,34 +120,34 @@ if (fs.lstatSync(path.join(cwd,rawurl)).isDirectory()){ //check if path is dir, 
 
     });
       res.end(`</html>`)
+	console.log(new Date() + ": Listed dir " + chalk.blue(rawurl || "[blank]"))
       return 0
 });
 }
 
 }else{ //not a dir
   try{
- res.writeHead(200, {'Content-Type': mime[req.url.slice(req.url.lastIndexOf('.')+1)]||'text/html'});
+ res.writeHead(200, {'Content-Type': mime[req.url.slice(req.url.lastIndexOf('.')+1)]||'text/plain'});
  let stream = fs.createReadStream(path.join(cwd,rawurl))
  stream.on('open', function(){
    stream.pipe(res);
 
  })
-
+console.log(new Date() + ": success at " + chalk.blue(rawurl))
  return 0
 }catch(e){
 
-  console.log(e.message)
+  console.log(new Date() + ": Error unknown -->" + chalk.red(e.message))
   return 3
 }
 }
 }catch(e){//non existent dir nor file
 	res.writeHead(200, {'Content-Type': 'text/plain'});
 	res.write(e.message)
-  console.log("err: --->" + e.message)
+  console.log(new Date() + ": Error 404 --->" + chalk.red(e.message))
 	res.end()
   return 2
 }
-console.log("unhandled request: " + rawurl)
 });
 
 server.listen(80);
