@@ -3,6 +3,12 @@ let fs = require('fs');
 let url = require('url')
 let path = require('path')
 let chalk = require('chalk')
+function getdate(){
+	let raw = new Date()
+	raw=raw+'';
+	let pretty = raw.split("GMT")
+	return pretty[0]
+}
 let mime =
 {
   aac: 'audio/aac',
@@ -87,7 +93,10 @@ let cwd = process.cwd()
 console.log(cwd)
 let server = http.createServer(function serve(req, res) {
 
-
+if (req.method != 'GET'){
+	console.log(`${getdate()}: Rejected ${req.url} with method ${req.method}`)
+	return 500;
+}
 let rawurl= url.parse(req.url).pathname
 rawurl = rawurl.substring(1) //cut slash
 console.log(rawurl)
@@ -99,7 +108,7 @@ if (fs.lstatSync(path.join(cwd,rawurl)).isDirectory()){ //check if path is dir, 
 	res.writeHead(200, {'Content-Type': 'text/html'});
 	res.write(data)
 	res.end()
-	console.log(new Date() + ": read index of " + chalk.blue(rawurl || "[blank]" )) 
+	console.log(getdate() + ": read index of " + chalk.green(rawurl || "[blank]" )) 
         return 0
 })
 }else{
@@ -120,7 +129,7 @@ if (fs.lstatSync(path.join(cwd,rawurl)).isDirectory()){ //check if path is dir, 
 
     });
       res.end(`</html>`)
-	console.log(new Date() + ": Listed dir " + chalk.blue(rawurl || "[blank]"))
+	console.log(getdate() + ": Listed dir " + chalk.green(rawurl || "[blank]"))
       return 0
 });
 }
@@ -133,18 +142,18 @@ if (fs.lstatSync(path.join(cwd,rawurl)).isDirectory()){ //check if path is dir, 
    stream.pipe(res);
 
  })
-console.log(new Date() + ": success at " + chalk.blue(rawurl))
+console.log(getdate() + ": success at " + chalk.green(rawurl))
  return 0
 }catch(e){
 
-  console.log(new Date() + ": Error unknown -->" + chalk.red(e.message))
+  console.log(getdate() + ": Error unknown -->" + chalk.red(e.message))
   return 3
 }
 }
 }catch(e){//non existent dir nor file
 	res.writeHead(200, {'Content-Type': 'text/plain'});
 	res.write(e.message)
-  console.log(new Date() + ": Error 404 --->" + chalk.red(e.message))
+  console.log(getdate() + ": Error 404 --->" + chalk.red(e.message))
 	res.end()
   return 2
 }
