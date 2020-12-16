@@ -99,7 +99,6 @@ if (req.method != 'GET'){
 }
 let rawurl= url.parse(req.url).pathname
 rawurl = rawurl.substring(1) //cut slash
-console.log(rawurl)
 // until here we've normalized the url
 try{
 if (fs.lstatSync(path.join(cwd,rawurl)).isDirectory()){ //check if path is dir, throw err if non existent
@@ -108,7 +107,7 @@ if (fs.lstatSync(path.join(cwd,rawurl)).isDirectory()){ //check if path is dir, 
 	res.writeHead(200, {'Content-Type': 'text/html'});
 	res.write(data)
 	res.end()
-	console.log(getdate() + ": read index of " + chalk.green(rawurl || "[blank]" )) 
+	console.log(getdate() + ": read index of " + chalk.green(rawurl || "/" ))
         return 0
 })
 }else{
@@ -121,15 +120,15 @@ if (fs.lstatSync(path.join(cwd,rawurl)).isDirectory()){ //check if path is dir, 
         return 1
     }
 
-    
+
     res.writeHead(200, {'Content-Type': 'text/html'})
-    res.write(`<html><head><title>Listing ${rawurl}</title></head>`)
+    res.write(`<html><head><title>Listing ${rawurl || "/"}</title></head>`)
     files.forEach(file => {
-        res.write(`<a href = ${url.parse(req.url).pathname+"/"+file}>${file}</a><p></p>`)
+        res.write(`<a href = ${"./"+url.parse(req.url).pathname+"/"+file}>${file}</a><p></p>`)
 
     });
       res.end(`</html>`)
-	console.log(getdate() + ": Listed dir " + chalk.green(rawurl || "[blank]"))
+	console.log(getdate() + ": Listed dir " + chalk.green(rawurl || "/"))
       return 0
 });
 }
