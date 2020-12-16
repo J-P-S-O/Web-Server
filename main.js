@@ -81,11 +81,11 @@ let mime =
   xml: 'application/xml',
   xul: 'application/vnd.mozilla.xul+xml',
   zip: 'application/zip',
-  3gp: 'video/3gpp',
-  3gp_DOES_NOT_CONTAIN_VIDEO: 'audio/3gpp',
-  3gp2: 'video/3gpp2',
-  3gp2_DOES_NOT_CONTAIN_VIDEO: 'audio/3gpp2',
-  7z: 'application/x-7z-compressed'
+  '3gp': 'video/3gpp',
+  '3gp_DOES_NOT_CONTAIN_VIDEO': 'audio/3gpp',
+  '3gp2': 'video/3gpp2',
+  '3gp2_DOES_NOT_CONTAIN_VIDEO': 'audio/3gpp2',
+  '7z': 'application/x-7z-compressed'
 }
 console.log(mime)
 
