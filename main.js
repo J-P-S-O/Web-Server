@@ -81,11 +81,11 @@ let mime =
   xml: 'application/xml',
   xul: 'application/vnd.mozilla.xul+xml',
   zip: 'application/zip',
-  '3gp': 'video/3gpp',
-  '3gp_DOES_NOT_CONTAIN_VIDEO': 'audio/3gpp',
-  '3gp2': 'video/3gpp2',
-  '3gp2_DOES_NOT_CONTAIN_VIDEO': 'audio/3gpp2',
-  '7z': 'application/x-7z-compressed'
+  3gp: 'video/3gpp',
+  3gp_DOES_NOT_CONTAIN_VIDEO: 'audio/3gpp',
+  3gp2: 'video/3gpp2',
+  3gp2_DOES_NOT_CONTAIN_VIDEO: 'audio/3gpp2',
+  7z: 'application/x-7z-compressed'
 }
 console.log(mime)
 
@@ -123,9 +123,9 @@ if (fs.lstatSync(path.join(cwd,rawurl)).isDirectory()){ //check if path is dir, 
 
     
     res.writeHead(200, {'Content-Type': 'text/html'})
-    res.write(`<html><head></head>`)
+    res.write(`<html><head><title>Listing ${rawurl}</title></head>`)
     files.forEach(file => {
-        res.write(`<a href = ${path.join(rawurl,file)}>${file}</a><p></p>`)
+        res.write(`<a href = ${url.parse(req.url).pathname+"/"+file}>${file}</a><p></p>`)
 
     });
       res.end(`</html>`)
