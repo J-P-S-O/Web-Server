@@ -5,7 +5,8 @@
   "description": "A web server",
   "main": "main.js",
   "scripts": {
-    "test": "npm i -g pkg && pkg main.js"
+    "get-dependencies": "npm i chalk && npm i -g typescript && npm i -g pkg ",
+    "test": "npm run get-dependencies && tsc && pkg main.js"
   },
   "keywords": [
     "server"
