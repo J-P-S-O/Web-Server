@@ -4,7 +4,7 @@ let url = require('url')
 let path = require('path')
 let chalk = require('chalk')
 function getdate(){
-	let raw = new Date()
+	let raw: string | Date = new Date()
 	raw=raw+'';
 	let pretty = raw.split("GMT")
 	return pretty[0]
