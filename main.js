@@ -81,14 +81,13 @@ let mime =
   '3gp2_DOES_NOT_CONTAIN_VIDEO': 'audio/3gpp2',
   '7z': 'application/x-7z-compressed'
 }
-console.log(mime)
 
-let cwd = process.cwd()
+let cwd:string = process.cwd()
 console.log(cwd)
-let server = http.createServer(function serve(req, res) {
+let server = http.createServer(function serve(req, res){
 
 
-let rawurl= url.parse(req.url).pathname
+let rawurl:string = url.parse(req.url).pathname
 rawurl = rawurl.substring(1) //cut slash
 console.log(rawurl)
 // until here we've normalized the url
@@ -99,7 +98,7 @@ if (fs.lstatSync(path.join(cwd,rawurl)).isDirectory()){ //check if path is dir, 
 	res.writeHead(200, {'Content-Type': 'text/html'});
 	res.write(data)
 	res.end()
-	console.log(new Date() + ": read index of " + chalk.blue(rawurl || "[blank]" )) 
+	console.log(getdate() + ": read index of " + chalk.blue(rawurl || "[blank]" )) 
         return 0
 })
 }else{
