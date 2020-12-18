@@ -1,0 +1,10 @@
+{
+"compilerOptions": {
+  "noImplicitAny": false,
+  "removeComments": false,
+  "preserveConstEnums": true
+},
+"filesGlob": [
+  "*.ts"
+]
+}
