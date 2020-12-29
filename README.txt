@@ -1,8 +1,8 @@
-# Http-Server, a production scale server.
+ Http-Server, a production scale server.
 
-# Features
+ Features
 - Simple configuration
 - Logs
 - TS built-in (coming soon)
-# Travis build
+ Travis build
 ![image](https://api.travis-ci.com/J-P-S-O/Http-Server.svg?branch=main)
