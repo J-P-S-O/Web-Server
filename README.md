@@ -1,6 +1,6 @@
- Http-Server, a production scale server.
+# Http-Server, a production scale server.
 
- Features
+ # Features
 - Simple configuration
 - Logs
 - TS built-in (coming soon)
