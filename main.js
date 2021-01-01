@@ -1,15 +1,15 @@
-let http = require('http');
-let fs = require('fs');
-let url = require('url')
-let path = require('path')
-let chalk = require('chalk')
-function getdate(){
-	let raw = new Date()
-	raw=raw+'';
-	let pretty = raw.split("GMT")
-	return pretty[0]
+const http = require('http')
+const fs = require('fs')
+const url = require('url')
+const path = require('path')
+const chalk = require('chalk')
+function getdate () {
+  let raw = new Date()
+  raw = raw + ''
+  const pretty = raw.split('GMT')
+  return pretty[0]
 }
-let mime =
+const mime =
 {
   aac: 'audio/aac',
   abw: 'application/x-abiword',
@@ -80,84 +80,73 @@ let mime =
   xlsx_OLD: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
   xml: 'application/xml',
   xul: 'application/vnd.mozilla.xul+xml',
-  zip: 'application/zip',
-  '3gp': 'video/3gpp',
-  '3gp_DOES_NOT_CONTAIN_VIDEO': 'audio/3gpp',
-  '3gp2': 'video/3gpp2',
-  '3gp2_DOES_NOT_CONTAIN_VIDEO': 'audio/3gpp2',
-  '7z': 'application/x-7z-compressed'
+  zip: 'application/zip'
 }
 console.log(mime)
 
-let cwd = process.cwd()
+const cwd = process.cwd()
 console.log(cwd)
-let server = http.createServer(function serve(req, res) {
+const server = http.createServer(function serve (req, res) {
+  if (req.method != 'GET') {
+    console.log(`${getdate()}: Rejected ${req.url} with method ${req.method}`)
+    return 500
+  }
+  let rawurl = url.parse(req.url).pathname
+  rawurl = rawurl.substring(1) // cut slash
+  console.log(rawurl)
+  // until here we've normalized the url
+  try {
+    if (fs.lstatSync(path.join(cwd, rawurl)).isDirectory()) { // check if path is dir, throw err if non existent
+      if (fs.existsSync(path.join(cwd, rawurl, 'index.html'))) {
+        fs.readFile(path.join(cwd, rawurl, 'index.html'), function (err, data) {
+          res.writeHead(200, { 'Content-Type': 'text/html' })
+          res.write(data)
+          res.end()
+          console.log(getdate() + ': read index of ' + chalk.green(rawurl || '[blank]'))
+          return 0
+        })
+      } else {
+        // no indexfile, list dir
+        fs.readdir(path.join(cwd, rawurl), (err, files) => {
+          if (err) {
+            res.writeHead(200, { 'Content-Type': 'text/plain' })
+            res.end(JSON.stringify(err))
+            console.log('unknown readdir error -->' + err.message)
+            return 1
+          }
 
-if (req.method != 'GET'){
-	console.log(`${getdate()}: Rejected ${req.url} with method ${req.method}`)
-	return 500;
-}
-let rawurl= url.parse(req.url).pathname
-rawurl = rawurl.substring(1) //cut slash
-console.log(rawurl)
-// until here we've normalized the url
-try{
-if (fs.lstatSync(path.join(cwd,rawurl)).isDirectory()){ //check if path is dir, throw err if non existent
-	if (fs.existsSync(path.join(cwd,rawurl,'index.html'))){
-	fs.readFile(path.join(cwd,rawurl,'index.html'), function (err,data){
-	res.writeHead(200, {'Content-Type': 'text/html'});
-	res.write(data)
-	res.end()
-	console.log(getdate() + ": read index of " + chalk.green(rawurl || "[blank]" )) 
+          res.writeHead(200, { 'Content-Type': 'text/html' })
+          res.write(`<html><head><title>Listing ${rawurl}</title></head>`)
+          files.forEach(file => {
+            res.write(`<a href = ${url.parse(req.url).pathname + '/' + file}>${file}</a><p></p>`)
+          })
+          res.end('</html>')
+          console.log(getdate() + ': Listed dir ' + chalk.green(rawurl || '[blank]'))
+          return 0
+        })
+      }
+    } else { // not a dir
+      try {
+        res.writeHead(200, { 'Content-Type': mime[req.url.slice(req.url.lastIndexOf('.') + 1)] || 'text/plain' })
+        const stream = fs.createReadStream(path.join(cwd, rawurl))
+        stream.on('open', function () {
+          stream.pipe(res)
+        })
+        console.log(getdate() + ': success at ' + chalk.green(rawurl))
         return 0
-})
-}else{
-  //no indexfile, list dir
-  fs.readdir(path.join(cwd,rawurl), (err, files) => {
-    if (err) {
-        res.writeHead(200, {'Content-Type': 'text/plain'})
-        res.end(JSON.stringify(err))
-        console.log("unknown readdir error -->"+ err.message)
-        return 1
+      } catch (e) {
+        console.log(getdate() + ': Error unknown -->' + chalk.red(e.message))
+        return 3
+      }
     }
+  } catch (e) { // non existent dir nor file
+    res.writeHead(200, { 'Content-Type': 'text/plain' })
+    res.write(e.message)
+    console.log(getdate() + ': Error 404 --->' + chalk.red(e.message))
+    res.end()
+    return 2
+  }
+})
 
-    
-    res.writeHead(200, {'Content-Type': 'text/html'})
-    res.write(`<html><head><title>Listing ${rawurl}</title></head>`)
-    files.forEach(file => {
-        res.write(`<a href = ${url.parse(req.url).pathname+"/"+file}>${file}</a><p></p>`)
-
-    });
-      res.end(`</html>`)
-	console.log(getdate() + ": Listed dir " + chalk.green(rawurl || "[blank]"))
-      return 0
-});
-}
-
-}else{ //not a dir
-  try{
- res.writeHead(200, {'Content-Type': mime[req.url.slice(req.url.lastIndexOf('.')+1)]||'text/plain'});
- let stream = fs.createReadStream(path.join(cwd,rawurl))
- stream.on('open', function(){
-   stream.pipe(res);
-
- })
-console.log(getdate() + ": success at " + chalk.green(rawurl))
- return 0
-}catch(e){
-
-  console.log(getdate() + ": Error unknown -->" + chalk.red(e.message))
-  return 3
-}
-}
-}catch(e){//non existent dir nor file
-	res.writeHead(200, {'Content-Type': 'text/plain'});
-	res.write(e.message)
-  console.log(getdate() + ": Error 404 --->" + chalk.red(e.message))
-	res.end()
-  return 2
-}
-});
-
-server.listen(80);
-console.log("success");
+server.listen(80)
+console.log('success')
